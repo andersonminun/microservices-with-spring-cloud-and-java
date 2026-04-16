@@ -32,8 +32,10 @@ jobs:
 
     - name: Tag Docker Images
       run: |
+        docker tag book-service:latest ${{ secrets.DOCKER_USERNAME }}/book-service:latest
         docker tag book-service:latest ${{ secrets.DOCKER_USERNAME }}/book-service:kube-v1
         docker tag book-service:latest ${{ secrets.DOCKER_USERNAME }}/book-service:${{ github.RUN_ID }}
+        docker tag exchange-service:latest ${{ secrets.DOCKER_USERNAME }}/exchange-service:latest
         docker tag exchange-service:latest ${{ secrets.DOCKER_USERNAME }}/exchange-service:kube-v1
         docker tag exchange-service:latest ${{ secrets.DOCKER_USERNAME }}/exchange-service:${{ github.RUN_ID }}
 
