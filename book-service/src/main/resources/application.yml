@@ -1,0 +1,57 @@
+spring:
+    application:
+        name: book-service
+    datasource:
+        url: jdbc:mysql://localhost:3306/book_service
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: none
+        show-sql: false
+
+management:
+    tracing:
+        sampling:
+            probability: 1.0
+    zipkin:
+        tracing:
+            endpoint: http://localhost:9411/api/v2/spans
+
+server:
+    port: 8100
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka/
+    instance:
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${server.port}
+
+resilience4j:
+  retry:
+    instances:
+      foo-bar:
+        max-attempts: 7
+        wait-duration: 1s
+        enable-exponential-backoff: true
+  ratelimiter:
+    instances:
+      default:
+        limit-for-period: 2
+        limit-refresh-period: 10s
+        timeout-duration: 0
+  bulkhead:
+    instances:
+        default:
+            max-concurrent-calls: 10
+            max-wait-duration: 0
+
+springdoc:
+    api-docs: 
+        path: /book-service/v3/api-docs
+    swagger-ui: 
+        path: /book-service/v3/swagger-ui.html
+    override-server-url: true
