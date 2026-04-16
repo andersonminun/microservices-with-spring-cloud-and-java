@@ -1,5 +1,6 @@
 services:
   naming-service:
+    image: naming-service:latest
     build: ./naming-service
     ports:
       - "8761:8761"
@@ -12,6 +13,7 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   api-gateway:
+    image: api-gateway:latest
     build: ./api-gateway
     ports:
       - "8765:8765"
@@ -26,6 +28,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-service:8761/eureka/
 
   exchange-service:
+    image: exchange-service:latest
     build: ./exchange-service
     ports:
       - "8000:8000"
@@ -45,6 +48,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin123
 
   book-service:
+    image: book-service:latest
     build: ./book-service
     ports:
       - "8100:8100"
