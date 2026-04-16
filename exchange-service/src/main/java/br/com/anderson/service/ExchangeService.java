@@ -25,7 +25,8 @@ public class ExchangeService {
         }
 
         exchange.setConvertedValue(exchange.getConversionFactor().multiply(amount));
-        exchange.setEnvironment(instanceInformationService.retrieveServerPort());
+        exchange.setEnvironment("PORT: " + instanceInformationService.retrieveServerPort() + 
+                " - HOST: " + instanceInformationService.retrieveHostName());
 
         return exchange;
     }

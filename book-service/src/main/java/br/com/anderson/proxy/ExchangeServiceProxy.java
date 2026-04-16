@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.anderson.dto.Exchange;
 
-@FeignClient(name = "exchange-service")
+@FeignClient(name = "exchange-service", url = "${EXCHANGE_SERVICE_SERVICE_HOST:http://host.docker.internal}:8000")
 public interface ExchangeServiceProxy {
 
     @GetMapping("/exchange-service/{amount}/{from}/{to}")

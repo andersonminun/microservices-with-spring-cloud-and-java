@@ -1,31 +1,4 @@
 services:
-  naming-service:
-    image: naming-service:latest
-    build: ./naming-service
-    ports:
-      - "8761:8761"
-    restart: always
-    networks:
-      - anderson-network
-    depends_on:
-      - zipkin
-    environment:
-      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-
-  api-gateway:
-    image: api-gateway:latest
-    build: ./api-gateway
-    ports:
-      - "8765:8765"
-    restart: always
-    networks:
-      - anderson-network
-    depends_on:
-      - naming-service
-      - zipkin
-    environment:
-      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-service:8761/eureka/
 
   exchange-service:
     image: exchange-service:latest
@@ -35,15 +8,11 @@ services:
     restart: always
     networks:
       - anderson-network
-    depends_on:
-      - naming-service
-      - exchange-db
-      - zipkin
     environment:
       TZ: "America/Sao_Paulo"
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-service:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://exchange-db:3306/exchange_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/exchange_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
 
@@ -55,53 +24,13 @@ services:
     restart: always
     networks:
       - anderson-network
-    depends_on:
-      - naming-service
-      - book-db
-      - zipkin
     environment:
       TZ: "America/Sao_Paulo"
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-service:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://book-db:3306/book_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/book_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
-
-  zipkin:
-    image: openzipkin/zipkin:3.5.1
-    ports:
-      - "9411:9411"
-    restart: always
-    networks:
-      - anderson-network
-
-  book-db:
-    image: mysql:9.3.0
-    ports:
-      - "3310:3306"
-    restart: always
-    environment:
-      TZ: "America/Sao_Paulo"
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: book_service
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    networks:
-      - anderson-network
-  
-  exchange-db:
-    image: mysql:9.3.0
-    ports:
-      - "3308:3306"
-    restart: always
-    environment:
-      TZ: "America/Sao_Paulo"
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: exchange_service
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    networks:
-      - anderson-network
 
 networks:
   anderson-network:
